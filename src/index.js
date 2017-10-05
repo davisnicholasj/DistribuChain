@@ -4,6 +4,10 @@ import App from './App'
 import eventManagement from './eventManagement'
 import addPurchase from './addPurchase'
 import { Router, Route, browserHistory } from 'react-router';
+import './css/oswald.css'
+import './css/open-sans.css'
+import './css/pure-min.css'
+import './stylesheets/App.css'
 
 render(
   //<App/>

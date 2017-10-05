@@ -3,6 +3,7 @@ import Web3 from 'web3';
 import getWeb3 from './utils/getWeb3';
 import Affair from '../build/contracts/Affair.json';
 
+
 class createEvent extends Component {
   constructor(props) {
     super(props);
@@ -20,19 +21,12 @@ class createEvent extends Component {
   componentWillMount() {
     // Get network provider and web3 instance.
     // See utils/getWeb3 for more info.
-    getWeb3
-      .then(results => {
-        this.setState({
-          web3: results.web3
-        })
+    getWeb3.then(results => {
+      this.setState({ web3: results.web3 })
 
-        // Instantiate contract once web3 provided.
-        console.log('web3 is active on page');
-        
-      })
-      .catch(() => {
-        console.log('Error finding web3.')
-      })
+      // Instantiate contract once web3 provided.
+      console.log('web3 is active on page');
+    }).catch(() => { console.log('Error finding web3.') })
   }
 
   handleInputChange(event) {
@@ -54,11 +48,11 @@ class createEvent extends Component {
 
   instantiateContract(event) {
     console.log('here');
-    // const contract = require('truffle-contract')
-    // const Affair = contract(Affair)
-    // var name = this.state.affairName;
-    // var debt = this.state.affairDebt;
-    // var balance = this.calculateMaxGas(Web3.eth.coinbase);
+    const contract = require('truffle-contract')
+    const Affair = contract(Affair)
+    var name = this.state.affairName;
+    var debt = this.state.affairDebt;
+    var balance = this.calculateMaxGas(Web3.eth.coinbase);
 
     // Affair.setProvider(this.state.web3.currentProvider)
     // Affair.new(name, debt);
@@ -68,7 +62,7 @@ class createEvent extends Component {
     // Declaring this for later so we can chain functions on SimpleStorage.
     // var AffairInstance
     // Affair.new(1, 2, 3, quantity, product, deliveryDate, deliveryAddress, { from: this.Web3.eth.coinbase, gas: balance })
-    
+
 
 
   }
@@ -97,18 +91,33 @@ class createEvent extends Component {
           </nav>
         </div>
         <main className="container">
-          <div className="Contact">
-            <div className="pure-u-1-1">
-              <form onSubmit={this.handleCreate}>
-                <br />
-                <label>
-                  Name: <input type="text" name="affairName" value={this.state.affairName} onChange={this.handleInputChange} />
-                  Debt: <input type="number" name="affairDebt" value={this.state.affairDebt} onChange={this.handleInputChange} />
-                </label>
-                <input type="submit" value="Submit" />
-              </form>
+          <div className="form-table">
+            <div>
+              <div>
+                <form className="form-newEvent" onSubmit={this.handleCreate}>
+                  <label><h2>Create a new event</h2>
+                    <input type="text" placeholder="Event Name" name="affairName" value={this.state.affairName} onChange={this.handleInputChange} /><br />
+                    <input type="number" name="affairDebt" value={this.state.affairDebt} onChange={this.handleInputChange} /><br />
+                  </label>
+                  <input type="submit" value="Submit" />
+                </form>
+              </div>
+              <div>
+                <form className="form-existingEvent" onSubmit={this.handleCreate}>
+                  <label><h2>View details of existing Event</h2>
+                    <input type="text" placeholder="Event Name" name="affairName" value={this.state.affairName} onChange={this.handleInputChange} /><br />
+                    <input type="number" name="affairDebt" value={this.state.affairDebt} onChange={this.handleInputChange} /><br />
+                  </label>
+                  <input type="submit" value="Submit" />
+                </form>
+              </div>
+
             </div>
+
           </div>
+          <div className="event-content">
+            <h1>test </h1>
+            </div>
         </main>
       </div>
 
