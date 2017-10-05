@@ -1,9 +1,9 @@
 import React from 'react'
 import { render } from 'react-dom'
-import App from './modules/App'
-import eventManagement from './modules/views/eventManagement'
-import addPurchase from './modules/views/addPurchase'
-import { IndexRoute, Router, Route, browserHistory } from 'react-router';
+import App from './App'
+import eventManagement from './eventManagement'
+import addPurchase from './addPurchase'
+import { Router, Route, browserHistory } from 'react-router';
 
 render(
   //<App/>
