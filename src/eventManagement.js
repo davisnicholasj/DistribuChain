@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Web3 from 'web3';
 import getWeb3 from './utils/getWeb3';
-import Affair from '../build/contracts/Affair.json';
+import AffairContract from '../build/contracts/Affair.json';
+import SimpleStorageContract from '../build/contracts/SimpleStorage.json';
 
 
 class createEvent extends Component {
@@ -10,6 +11,8 @@ class createEvent extends Component {
     this.state = {
       affairName: '',
       affairDebt: 0,
+      pastAffairDebt: 0,
+      pastAffairName: '',
       web3: null
     };
 
@@ -41,30 +44,57 @@ class createEvent extends Component {
 
   handleCreate(event) {
     console.log('handleCreate');
+    this.instantiateContract(this.state.affairName, this.state.affairDebt);
     alert('The event is named: ' + this.state.affairName + ' & the current total debt is: ' + this.state.affairDebt);
-    event.preventDefault();
 
   }
 
-  instantiateContract(event) {
-    console.log('here');
+  instantiateContractOriginal() {
+    /*
+     * SMART CONTRACT EXAMPLE
+     *
+     * Normally these functions would be called in the context of a
+     * state management library, but for convenience I've placed them here.
+     */
+
     const contract = require('truffle-contract')
-    const Affair = contract(Affair)
-    var name = this.state.affairName;
-    var debt = this.state.affairDebt;
-    var balance = this.calculateMaxGas(Web3.eth.coinbase);
-
-    // Affair.setProvider(this.state.web3.currentProvider)
-    // Affair.new(name, debt);
-
-
+    const simpleStorage = contract(SimpleStorageContract)
+    simpleStorage.setProvider(this.state.web3.currentProvider)
 
     // Declaring this for later so we can chain functions on SimpleStorage.
-    // var AffairInstance
-    // Affair.new(1, 2, 3, quantity, product, deliveryDate, deliveryAddress, { from: this.Web3.eth.coinbase, gas: balance })
+    var simpleStorageInstance
 
+    // Get accounts.
+    this.state.web3.eth.getAccounts((error, accounts) => {
+      simpleStorage.deployed().then((instance) => {
+        simpleStorageInstance = instance
 
+        // Stores a given value, 5 by default.
+        return simpleStorageInstance.set(5, { from: accounts[0] })
+      }).then((result) => {
+        // Get the value from the contract to prove it worked.
+        return simpleStorageInstance.get.call(accounts[0])
+      }).then((result) => {
+        // Update state with the result.
+        return this.setState({ storageValue: result.c[0] })
+      })
+    })
+  }
 
+  instantiateContract() {
+
+    const contract = require('truffle-contract')
+    const affair = contract(AffairContract)
+    affair.setProvider(this.state.web3.currentProvider)
+
+    var name = this.state.affairName;
+    var debt = this.state.affairDebt;
+
+   
+    affair.new(name, debt).then(function (affair){
+      console.log();
+    });
+    affair.address;
   }
 
 
@@ -80,7 +110,7 @@ class createEvent extends Component {
   }
   render() {
     return (
-      <div className="App">
+      <div className="App" >
         <div>
           <nav className="navbar pure-menu pure-menu-horizontal">
             <div>
@@ -105,8 +135,8 @@ class createEvent extends Component {
               <div>
                 <form className="form-existingEvent" onSubmit={this.handleCreate}>
                   <label><h2>View details of existing Event</h2>
-                    <input type="text" placeholder="Event Name" name="affairName" value={this.state.affairName} onChange={this.handleInputChange} /><br />
-                    <input type="number" name="affairDebt" value={this.state.affairDebt} onChange={this.handleInputChange} /><br />
+                    <input type="text" placeholder="Past Event Name" name="affairName" value={this.state.pastAffairName} onChange={this.handleInputChange} /><br />
+                    <input type="number" name="affairDebt" value={this.state.pastAffairDebt} onChange={this.handleInputChange} /><br />
                   </label>
                   <input type="submit" value="Submit" />
                 </form>
@@ -116,10 +146,10 @@ class createEvent extends Component {
 
           </div>
           <div className="event-content">
-            <h1>test </h1>
-            </div>
+            <h1>content to be upated based on what events exist</h1>
+          </div>
         </main>
-      </div>
+      </div >
 
 
     );
